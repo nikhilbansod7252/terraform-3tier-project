@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "5.62.0"
+      version = "6.43.0"
     }
   }
 }
@@ -134,10 +134,10 @@ resource "aws_route_table_association" "b" {
 
 #Create EC2 Instance
 resource "aws_instance" "webserver1" {
-  ami                    = "ami-0492447090ced6eb5"
+  ami                    = "ami-02eb0c2388ee999f9"
   instance_type          = "t2.micro"
   availability_zone      = "ap-south-1a"
-  key_name               = "MyKey"
+  key_name               = "keyPair-One"
   vpc_security_group_ids = [aws_security_group.webserver-sg.id]
   subnet_id              = aws_subnet.web-subnet-1.id
   user_data              = "${file("apache.sh")}"
@@ -148,10 +148,10 @@ resource "aws_instance" "webserver1" {
 }
 
 resource "aws_instance" "webserver2" {
-  ami                    = "ami-0492447090ced6eb5"
+  ami                    = "ami-02eb0c2388ee999f9"
   instance_type          = "t2.micro"
   availability_zone      = "ap-south-1b"
-  key_name               = "MyKey"
+  key_name               = "keyPair-One"
   vpc_security_group_ids = [aws_security_group.webserver-sg.id]
   subnet_id              = aws_subnet.web-subnet-2.id
   user_data              = "${file("apache.sh")}"
@@ -163,10 +163,10 @@ resource "aws_instance" "webserver2" {
 
 #Create EC2 Instance
 resource "aws_instance" "appserver1" {
-  ami                    = "ami-0492447090ced6eb5"
+  ami                    = "ami-02eb0c2388ee999f9"
   instance_type          = "t2.micro"
   availability_zone      = "ap-south-1a"
-  key_name               = "MyKey"
+  key_name               = "keyPair-One"
   vpc_security_group_ids = [aws_security_group.appserver-sg.id]
   subnet_id              = aws_subnet.application-subnet-1.id
   tags = {
@@ -175,10 +175,10 @@ resource "aws_instance" "appserver1" {
 }
 
 resource "aws_instance" "appserver2" {
-  ami                    = "ami-0492447090ced6eb5"
+  ami                    = "ami-02eb0c2388ee999f9"
   instance_type          = "t2.micro"
   availability_zone      = "ap-south-1b"
-  key_name               = "MyKey"
+  key_name               = "keyPair-One"
   vpc_security_group_ids = [aws_security_group.appserver-sg.id]
   subnet_id              = aws_subnet.application-subnet-2.id
 
@@ -196,6 +196,9 @@ resource "aws_db_instance" "default" {
   username             = "admin"
   password             = "Root123456"
   skip_final_snapshot  = true
+
+  db_subnet_group_name    = aws_db_subnet_group.default.name
+  vpc_security_group_ids  = [aws_security_group.database-sg.id]
 }
 
 resource "aws_db_subnet_group" "default" {
