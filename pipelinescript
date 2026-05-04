@@ -1,10 +1,14 @@
 pipeline {
     agent any 
-    
+
+    parameters {
+        choice(name: 'action', choices: ['apply', 'destroy'], description: 'Terraform action')
+    }
+
     stages {
         stage('checkout') {
             steps {
-                git 'https://github.com/ReyazShaik/terraform-3tier-project.git'
+                git branch: 'main', url: 'https://github.com/nikhilbansod7252/terraform-3tier-project.git'
             }
         }
         stage('init') {
@@ -24,7 +28,7 @@ pipeline {
         }
         stage('action') {
             steps {
-                sh 'terraform $action --auto-approve'
+                sh "terraform ${params.action} --auto-approve"
             }
         }
     }
